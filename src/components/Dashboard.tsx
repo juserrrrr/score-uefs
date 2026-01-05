@@ -153,13 +153,20 @@ export const Dashboard: React.FC<DashboardProps> = ({ data }) => {
                     value={`${data.approvedHours}h`}
                     icon={<Sigma className="w-5 h-5" />}
                     gradient="from-violet-500 to-purple-500"
-                    subtext="Total Aprovado"
+                    subtext={
+                        <>
+                            Total Aprovado
+                            <span className="block text-[10px] text-slate-300/80 mt-1 font-medium bg-slate-800/20 py-0.5 px-2 rounded-md border border-slate-700/30">
+                                Exceto sem CH de dispensas/trancamentos
+                            </span>
+                        </>
+                    }
                 />
             </div>
 
             {/* Recharts Line Chart */}
             {data.semesterScores.length > 1 && (
-                <div className="p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-surface/80 to-surface/40 backdrop-blur-xl shadow-2xl">
+                <div className="p-6 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-surface/80 to-surface/40 backdrop-blur-xl shadow-2xl overflow-hidden">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 rounded-lg bg-gradient-to-br from-violet-500/20 to-purple-500/20">
                             <TrendingUp className="w-5 h-5 text-violet-400" />
@@ -167,71 +174,105 @@ export const Dashboard: React.FC<DashboardProps> = ({ data }) => {
                         <h3 className="text-lg font-semibold text-white">Evolução do Desempenho</h3>
                     </div>
 
-                    <ResponsiveContainer width="100%" height={300}>
-                        <ComposedChart data={data.semesterScores}>
-                            <defs>
-                                <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                            <XAxis dataKey="semester" stroke="#94a3b8" fontSize={12} tickLine={false} />
-                            <YAxis yAxisId="left" stroke="#94a3b8" fontSize={12} tickLine={false} domain={[0, 10]} />
-                            <YAxis yAxisId="right" orientation="right" stroke="#94a3b8" fontSize={12} tickLine={false} />
-                            <Tooltip
-                                contentStyle={{
-                                    backgroundColor: '#1e293b',
-                                    border: '1px solid #334155',
-                                    borderRadius: '12px',
-                                    boxShadow: '0 10px 40px rgba(0,0,0,0.3)'
-                                }}
-                                labelStyle={{ color: '#fff', fontWeight: 'bold' }}
-                                formatter={(value, name) => {
-                                    const numValue = typeof value === 'number' ? value : 0;
-                                    const isScoreLine = name === 'Score Oficial' || name === 'Média Ponderada';
-                                    return [isScoreLine ? numValue.toFixed(4) : numValue, name];
-                                }}
-                            />
-                            <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                            <Area
-                                yAxisId="left"
-                                type="monotone"
-                                dataKey="score"
-                                stroke="transparent"
-                                fill="url(#colorScore)"
-                                strokeWidth={0}
-                                legendType="none"
-                                tooltipType="none"
-                            />
-                            <Line
-                                yAxisId="left"
-                                type="monotone"
-                                dataKey={scoreType === 'weighted' ? 'cumulativeWeightedScore' : 'score'}
-                                name={scoreName}
-                                stroke={scoreType === 'weighted' ? '#f97316' : '#8b5cf6'}
-                                strokeWidth={3}
-                                dot={{ fill: scoreType === 'weighted' ? '#f97316' : '#8b5cf6', strokeWidth: 2, r: 5, stroke: '#fff' }}
-                                activeDot={{ r: 7, stroke: '#fff', strokeWidth: 2 }}
-                            />
-                            <Bar
-                                yAxisId="right"
-                                dataKey="semesterHours"
-                                name="Carga Horária do Semestre"
-                                fill="#06b6d4"
-                                opacity={0.6}
-                                radius={[4, 4, 0, 0]}
-                                barSize={30}
-                            />
-                        </ComposedChart>
-                    </ResponsiveContainer>
+                    <div className="w-full overflow-x-auto pb-4">
+                        <div className="min-w-[600px] h-[300px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <ComposedChart data={data.semesterScores}>
+                                    <defs>
+                                        <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                                            <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                                    <XAxis
+                                        dataKey="semester"
+                                        stroke="#94a3b8"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        dy={10}
+                                    />
+                                    <YAxis
+                                        yAxisId="left"
+                                        stroke="#94a3b8"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        domain={[0, 10]}
+                                    />
+                                    <YAxis
+                                        yAxisId="right"
+                                        orientation="right"
+                                        stroke="#94a3b8"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                    />
+                                    <Tooltip
+                                        contentStyle={{
+                                            backgroundColor: '#1e293b',
+                                            border: '1px solid #334155',
+                                            borderRadius: '12px',
+                                            boxShadow: '0 10px 40px rgba(0,0,0,0.3)'
+                                        }}
+                                        itemStyle={{ padding: 0 }}
+                                        labelStyle={{ color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}
+                                        formatter={(value, name) => {
+                                            const numValue = typeof value === 'number' ? value : 0;
+                                            const isScoreLine = name === 'Score Oficial' || name === 'Média Ponderada';
+                                            return [
+                                                <span className="font-mono font-bold ml-2">
+                                                    {isScoreLine ? numValue.toFixed(4) : numValue}
+                                                </span>,
+                                                name
+                                            ];
+                                        }}
+                                    />
+                                    <Legend
+                                        wrapperStyle={{ paddingTop: '20px' }}
+                                        iconType="circle"
+                                    />
+                                    <Area
+                                        yAxisId="left"
+                                        type="monotone"
+                                        dataKey="score"
+                                        stroke="transparent"
+                                        fill="url(#colorScore)"
+                                        strokeWidth={0}
+                                        legendType="none"
+                                        tooltipType="none"
+                                    />
+                                    <Bar
+                                        yAxisId="right"
+                                        dataKey="semesterHours"
+                                        name="CH Semestral"
+                                        fill="#06b6d4"
+                                        opacity={0.3}
+                                        radius={[4, 4, 0, 0]}
+                                        maxBarSize={50}
+                                    />
+                                    <Line
+                                        yAxisId="left"
+                                        type="monotone"
+                                        dataKey={scoreType === 'weighted' ? 'cumulativeWeightedScore' : 'score'}
+                                        name={scoreName}
+                                        stroke={scoreType === 'weighted' ? '#f97316' : '#8b5cf6'}
+                                        strokeWidth={3}
+                                        dot={{ fill: scoreType === 'weighted' ? '#f97316' : '#8b5cf6', strokeWidth: 2, r: 4, stroke: '#fff' }}
+                                        activeDot={{ r: 6, stroke: '#fff', strokeWidth: 2 }}
+                                    />
+                                </ComposedChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
     );
 };
 
-const Card: React.FC<{ title: string; value: string; icon: React.ReactNode; gradient: string; subtext: string }> = ({
+const Card: React.FC<{ title: string; value: string; icon: React.ReactNode; gradient: string; subtext: React.ReactNode }> = ({
     title, value, icon, gradient, subtext
 }) => (
     <div className="relative p-6 rounded-2xl bg-gradient-to-br from-surface/80 to-surface/40 border border-slate-700/50 backdrop-blur-xl shadow-xl overflow-hidden group hover:border-slate-600/50 transition-all">
@@ -243,6 +284,6 @@ const Card: React.FC<{ title: string; value: string; icon: React.ReactNode; grad
         <div className="flex items-baseline gap-2">
             <span className="text-4xl font-bold text-white tracking-tight">{value}</span>
         </div>
-        <p className="text-xs text-slate-500 mt-3">{subtext}</p>
+        <div className="text-xs text-slate-500 mt-3">{subtext}</div>
     </div>
 );

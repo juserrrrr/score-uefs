@@ -1,5 +1,6 @@
 import React from 'react';
 import { Trash2, Calendar } from 'lucide-react';
+import { cn } from '../lib/utils';
 import type { Discipline } from '../types';
 
 interface DisciplineTableProps {
@@ -30,7 +31,7 @@ export const DisciplineTable: React.FC<DisciplineTableProps> = ({ disciplines, o
                 }
             `}</style>
             <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse min-w-[700px]">
                     <thead>
                         <tr className="bg-surface/80 border-b border-slate-700 text-xs uppercase tracking-wider text-slate-400">
                             <th className="p-4 font-medium">Período</th>
@@ -55,6 +56,7 @@ export const DisciplineTable: React.FC<DisciplineTableProps> = ({ disciplines, o
                                 return null;
                             };
                             const statusTag = getStatusTag();
+                            const isMissingHours = item.hours <= 0 && !isExcluded;
 
                             return (
                                 <tr key={item.id} className={`group hover:bg-white/5 transition-colors ${isExcluded ? 'opacity-50' : ''}`}>
@@ -78,7 +80,7 @@ export const DisciplineTable: React.FC<DisciplineTableProps> = ({ disciplines, o
                                                 type="text"
                                                 value={item.name}
                                                 onChange={(e) => onUpdate(item.id, 'name', e.target.value)}
-                                                className="bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-200 w-full focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 transition-all"
+                                                className="bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 w-full focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 transition-all"
                                             />
                                         )}
                                     </td>
@@ -86,18 +88,26 @@ export const DisciplineTable: React.FC<DisciplineTableProps> = ({ disciplines, o
                                         {isExcluded ? (
                                             <span className="text-sm text-slate-500">-</span>
                                         ) : (
-                                            <div className="relative">
+                                            <div className="relative flex justify-center">
                                                 <input
                                                     type="number"
                                                     value={item.hours || ''}
-                                                    placeholder="?"
+                                                    placeholder={isMissingHours ? "?" : ""}
                                                     onChange={(e) => onUpdate(item.id, 'hours', Number(e.target.value))}
-                                                    title={item.hours <= 0 ? "Carga horária não encontrada no PDF" : ""}
-                                                    className={`rounded-lg px-2 py-1.5 text-sm w-16 text-center focus:outline-none transition-all ${item.hours <= 0
-                                                        ? "bg-red-500/20 border-2 border-red-500 text-red-300 placeholder-red-400"
-                                                        : "bg-slate-800/50 border border-slate-700 text-slate-200 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50"
-                                                        }`}
+                                                    title={isMissingHours ? "Digite a carga horária" : "Carga Horária"}
+                                                    className={cn(
+                                                        "rounded-lg px-2 py-2 text-sm w-20 text-center focus:outline-none transition-all font-medium",
+                                                        isMissingHours
+                                                            ? "bg-red-500/20 border-2 border-red-500 text-red-100 placeholder-red-300 animate-pulse focus:animate-none shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+                                                            : "bg-slate-800/50 border border-slate-700 text-slate-200 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50"
+                                                    )}
                                                 />
+                                                {isMissingHours && (
+                                                    <span className="absolute -top-3 -right-2 flex h-3 w-3">
+                                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                                    </span>
+                                                )}
                                             </div>
                                         )}
                                     </td>
@@ -112,7 +122,7 @@ export const DisciplineTable: React.FC<DisciplineTableProps> = ({ disciplines, o
                                                 max="10"
                                                 value={item.grade}
                                                 onChange={(e) => onUpdate(item.id, 'grade', Number(e.target.value))}
-                                                className="bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-1.5 text-sm w-16 text-center font-bold text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 transition-all"
+                                                className="bg-slate-800/50 border border-slate-700 rounded-lg px-2 py-2 text-sm w-20 text-center font-bold text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 transition-all"
                                             />
                                         )}
                                     </td>
