@@ -6,7 +6,7 @@
       <stop offset="100%" style="stop-color:#6366f1"/>
     </linearGradient>
   </defs>
-  <rect width="100" height="100" rx="20" fill="url(#grad)"/>
-  <text x="50" y="68" font-family="Arial, sans-serif" font-size="50" font-weight="bold" fill="white" text-anchor="middle">S</text>
-  <circle cx="75" cy="25" r="8" fill="#10b981"/>
+  <rect width="100" height="100" rx="22" fill="url(#grad)"/>
+  <text x="50" y="75" font-family="Arial, sans-serif" font-size="70" font-weight="800" fill="white" text-anchor="middle">S</text>
+  <circle cx="78" cy="22" r="9" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
 </svg>
