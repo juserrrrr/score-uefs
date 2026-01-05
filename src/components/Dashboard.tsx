@@ -65,28 +65,30 @@ export const Dashboard: React.FC<DashboardProps> = ({ data }) => {
         <div className="space-y-8 mb-8">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="relative">
-                    <div className="p-6 rounded-2xl bg-gradient-to-br from-surface/80 to-surface/40 border border-slate-700/50 backdrop-blur-xl shadow-xl hover:border-slate-600/50 transition-all overflow-hidden">
+                <div className="relative h-full">
+                    <div className="h-full p-6 rounded-2xl bg-gradient-to-br from-surface/80 to-surface/40 border border-slate-700/50 backdrop-blur-xl shadow-xl hover:border-slate-600/50 transition-all overflow-hidden flex flex-col justify-between">
                         <div className={cn("absolute top-0 left-0 w-full h-1 bg-gradient-to-r",
                             scoreType === 'weighted' ? 'from-orange-500 to-amber-500' : 'from-emerald-500 to-teal-500')} />
-                        <div className="flex items-start justify-between mb-4">
-                            <div className="flex items-center gap-2">
-                                <h3 className="text-sm font-medium text-slate-400">{scoreName}</h3>
-                                <button
-                                    className="w-4 h-4 rounded-full bg-slate-700 text-slate-400 text-xs hover:bg-slate-600 hover:text-white transition-colors flex items-center justify-center"
-                                    onMouseEnter={() => setShowTooltip(true)}
-                                    onMouseLeave={() => setShowTooltip(false)}
-                                >
-                                    ?
-                                </button>
+                        <div>
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="flex items-center gap-2">
+                                    <h3 className="text-sm font-medium text-slate-400">{scoreName}</h3>
+                                    <button
+                                        className="w-4 h-4 rounded-full bg-slate-700 text-slate-400 text-xs hover:bg-slate-600 hover:text-white transition-colors flex items-center justify-center"
+                                        onMouseEnter={() => setShowTooltip(true)}
+                                        onMouseLeave={() => setShowTooltip(false)}
+                                    >
+                                        ?
+                                    </button>
+                                </div>
+                                <div className={cn("p-2 rounded-xl bg-gradient-to-br text-white",
+                                    scoreType === 'weighted' ? 'from-orange-500 to-amber-500' : 'from-emerald-500 to-teal-500')}>
+                                    <Activity className="w-5 h-5" />
+                                </div>
                             </div>
-                            <div className={cn("p-2 rounded-xl bg-gradient-to-br text-white",
-                                scoreType === 'weighted' ? 'from-orange-500 to-amber-500' : 'from-emerald-500 to-teal-500')}>
-                                <Activity className="w-5 h-5" />
+                            <div className="flex items-baseline gap-2">
+                                <span className="text-4xl font-bold text-white tracking-tight">{displayScoreRounded.toFixed(1)}</span>
                             </div>
-                        </div>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-4xl font-bold text-white tracking-tight">{displayScoreRounded.toFixed(1)}</span>
                         </div>
                         <div className="flex items-center gap-2 mt-4">
                             <button
@@ -276,14 +278,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ data }) => {
 const Card: React.FC<{ title: string; value: string; icon: React.ReactNode; gradient: string; subtext: React.ReactNode }> = ({
     title, value, icon, gradient, subtext
 }) => (
-    <div className="relative p-6 rounded-2xl bg-gradient-to-br from-surface/80 to-surface/40 border border-slate-700/50 backdrop-blur-xl shadow-xl overflow-hidden group hover:border-slate-600/50 transition-all">
+    <div className="relative p-6 rounded-2xl bg-gradient-to-br from-surface/80 to-surface/40 border border-slate-700/50 backdrop-blur-xl shadow-xl overflow-hidden group hover:border-slate-600/50 transition-all h-full flex flex-col justify-between">
         <div className={cn("absolute top-0 left-0 w-full h-1 bg-gradient-to-r", gradient)} />
-        <div className="flex items-start justify-between mb-4">
-            <h3 className="text-sm font-medium text-slate-400">{title}</h3>
-            <div className={cn("p-2 rounded-xl bg-gradient-to-br text-white", gradient)}>{icon}</div>
-        </div>
-        <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-bold text-white tracking-tight">{value}</span>
+        <div>
+            <div className="flex items-start justify-between mb-4">
+                <h3 className="text-sm font-medium text-slate-400">{title}</h3>
+                <div className={cn("p-2 rounded-xl bg-gradient-to-br text-white", gradient)}>{icon}</div>
+            </div>
+            <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-bold text-white tracking-tight">{value}</span>
+            </div>
         </div>
         <div className="text-xs text-slate-500 mt-3">{subtext}</div>
     </div>
